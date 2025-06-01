@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Signaling Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        .panel {
+            flex: 1;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #userList {
+            list-style: none;
+            padding: 0;
+        }
+        #userList li {
+            padding: 5px;
+            cursor: pointer;
+        }
+        #userList li:hover {
+            background-color: #f0f0f0;
+        }
+        #messages {
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>WebRTC Signaling Test</h1>
+    
+    <div class="container">
+        <div class="panel">
+            <h2>Connection</h2>
+            <input type="text" id="username" placeholder="Enter your username">
+            <button onclick="register()">Connect</button>
+            
+            <h3>Connected Users</h3>
+            <ul id="userList"></ul>
+        </div>
+        
+        <div class="panel">
+            <h2>Signaling Messages</h2>
+            <div id="messages"></div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let username = '';
+
+        function register() {
+            username = document.getElementById('username').value.trim();
+            if (username) {
+                socket.emit('register', username);
+            }
+        }
+
+        function log(message) {
+            const messages = document.getElementById('messages');
+            messages.innerHTML += `<div>${message}</div>`;
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        socket.on('connect', () => {
+            log('Connected to signaling server');
+        });
+
+        socket.on('userList', (users) => {
+            const userList = document.getElementById('userList');
+            userList.innerHTML = '';
+            users.forEach(user => {
+                if (user !== username) {
+                    const li = document.createElement('li');
+                    li.textContent = user;
+                    li.onclick = () => sendTestSignal(user);
+                    userList.appendChild(li);
+                }
+            });
+        });
+
+        socket.on('signal', (data) => {
+            log(`Received signal from ${data.sender}: ${JSON.stringify(data.data)}`);
+        });
+
+        function sendTestSignal(target) {
+            const signal = {
+                type: 'test',
+                timestamp: new Date().toISOString()
+            };
+            socket.emit('signal', {
+                target: target,
+                signal: signal
+            });
+            log(`Sent test signal to ${target}`);
+        }
+    </script>
+</body>
+</html> 

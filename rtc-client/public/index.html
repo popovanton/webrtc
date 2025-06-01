@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Connect Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f7f7f7;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 12px 32px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            border: none;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+        button:hover:enabled {
+            background: #0056b3;
+        }
+        #userList {
+            margin-top: 10px;
+            min-width: 200px;
+        }
+        #userList ul {
+            list-style: none;
+            padding: 0;
+        }
+        #userList li {
+            padding: 10px;
+            margin-bottom: 6px;
+            background: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid #eee;
+            transition: background 0.2s, border 0.2s;
+        }
+        #userList li.selected {
+            background: #007bff;
+            color: white;
+            border: 1px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>WebRTC Connect Demo</h1>
+        <div class="row">
+            <input type="text" id="username" placeholder="Enter your username">
+            <button id="register">Register</button>
+        </div>
+        <div id="userList">
+            <h3>Connected Users:</h3>
+            <ul id="users"></ul>
+        </div>
+        <button id="connectBtn" disabled>Connect</button>
+    </div>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html> 
